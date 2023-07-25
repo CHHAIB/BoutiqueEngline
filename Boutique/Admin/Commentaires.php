@@ -45,14 +45,15 @@ if(isset($_SESSION['id']))
        
        .menu {
         background-color:#D98880;
-        width: 19.8vw;
-        position: fixed;
         height: 40vw;
+        width: 19.7vw;
+        position: fixed;
         
       
        }
 
        .menu tr td{
+        width: 200px;
         text-align: center; 
         vertical-align: center;
         font-weight: bold;
@@ -63,25 +64,28 @@ if(isset($_SESSION['id']))
        .menu_g {
         display: flex;
         background-color: #f2f2f2;
-         height: 38.4vw;
-
        }
        .statistique {
        
         width: 80.2vw;
         margin-top: -20px;
-        height: 38.4vw;
-        margin-left: 19.8vw;
-       
+        height: 40vw;
+        margin-left: 19.7vw;
+                             
        }
+       
        .statistique th {
         height: 100px;
         background-color: #EBE0E0;
 
        }
+       .statistique tr {
+       
+       } 
        .statistique tr td {
         width: 40.1vw;
         background-color: #f2f2f2;
+        height: 60px;
 
        }
         .statistique tr td .items {
@@ -96,7 +100,6 @@ if(isset($_SESSION['id']))
             justify-content: space-between;
             font-size: 20px;
             color: #524C4C;
-            
         }
          .statistique tr td .items i {
             margin-top: 20px;
@@ -116,9 +119,27 @@ if(isset($_SESSION['id']))
             margin-bottom: 15px;
             font-weight: ;
          }
+         .statistique ,tr,td {
+             border: 1px solid #f2f2f2;
+            border-collapse: collapse;
 
-      
-
+         }
+         .statistique tr td{
+            text-align: center;
+            vertical-align: center;
+            background-color: #fff;
+         }
+        
+         .statistique #titre td{
+           font-size: 15px;
+          font-weight: bold;
+          background-color: #f2f2f2;
+         }
+         .statistique:nth-child(even)
+         { background-color: #fff; }
+         i {
+            margin-right: 10px;
+         }
 
     </style>
 </head>
@@ -148,6 +169,7 @@ if(isset($_SESSION['id']))
                 </tr>
                 <tr>
                     <td><a href="Commandes.php"> <div class="menu_items">COMMANDES</div></a></td>
+                </tr>
                  <tr>
                     <td><a href="Commentaires.php"> <div class="menu_items">COMMANTAIRES</div></a>  </td>
                 </tr>
@@ -155,77 +177,55 @@ if(isset($_SESSION['id']))
             </table>           
             <table class="statistique">
                     <tr>
-                        <th colspan="2">
-                            <p>Tableau de bord de l'admin</p> 
+                        <th colspan="4">
+                            <p>Gérer les articles</p> 
                         </th>
                     </tr>
-                    <tr>
-                        <td>
-                            <div class="items">
-                                <div>
-                                    <p style="font-weight:bold;">Nombre Clients</p>
-                                    <p><?php 
-                                    $req="exec ps_Nombe_Clients";
-                                    $res=sqlsrv_query($conn,$req);
-                                    $row=sqlsrv_fetch_array($res,SQLSRV_FETCH_ASSOC);
-                                    echo $row['nbrClients'];
-                                    ?> </p>
-                                </div>
-                                <div><i class="fas fa-user"></i>
-                                </div>
+                    <tr id="titre">    
+                    
+                        <?php 
+
+                        $req="exec ps_Commentaires_Utilisateurs_sur_Articles";
+                        $params = array();
+                        $options =  array( "Scrollable" => SQLSRV_CURSOR_KEYSET );
+                        $res = sqlsrv_query($conn,$req,$params ,$options);
+                        $row_count = sqlsrv_num_rows( $res);
+                        if($row_count<=0)
+                            {
                                 
-                            </div>
-                        </td>
-                        <td>
-                             <div class="items">
-                                <div>
-                                    <p style="font-weight:bold;">Nombre Produits</p>
-                                    <p><?php 
-                                    $req="exec ps_Nombe_Articles";
-                                    $res=sqlsrv_query($conn,$req);
-                                    $row=sqlsrv_fetch_array($res,SQLSRV_FETCH_ASSOC);
-                                    echo $row['nbrArticles'];
-                                    ?>  </p>
-                                </div>
-                                <div><i class="fas fa-tshirt"></i>
-                                </div>
+                               echo '<td colspan="4">Rien na été trouvé dans la base de données.</td>' ;
                                 
-                            </div>
-                        </td>
-                    </tr>
-                     <tr>
-                        <td>
-                             <div class="items">
-                                <div>
-                                    <p style="font-weight:bold;">Nombre Commandes</p>
-                                    <p><?php 
-                                    $req="exec ps_Nombe_Commandes_Factures";
-                                    $res=sqlsrv_query($conn,$req);
-                                    $row=sqlsrv_fetch_array($res,SQLSRV_FETCH_ASSOC);
-                                    echo $row['NCommandes'];
-                                    ?></p>
-                                </div>
-                                <div><i class="fas fa-shopping-bag"></i>
-                                </div>
+                            }
+                        else
+                            {
+                            
+                                echo 
+                                '<td ">Client</td>
+                                <td ">Id article </td>
+                                <td ">Commentaire</td>
+                                <td ">Action</td>
                                 
-                            </div>
-                        </td>
-                        <td>
-                             <div class="items">
-                                <div>
-                                    <p style="font-weight:bold;">Nombre Commantaires</p>
-                                    <p><?php 
-                                    $req="exec ps_Nombre_Commentaire";
-                                    $res=sqlsrv_query($conn,$req);
-                                    $row=sqlsrv_fetch_array($res,SQLSRV_FETCH_ASSOC);
-                                    echo $row['NbrComment'];
-                                    ?></p>
-                                </div>
-                                <div><i class="fas fa-edit"></i>
-                                </div>  
-                            </div>
-                        </td>
-                    </tr>
+
+                        </tr>        ';
+
+                        while($row=sqlsrv_fetch_array($res,SQLSRV_FETCH_ASSOC))
+                            {
+                                echo '
+                                    <tr>
+                                         <td >'.$row['PrenomUtilisateur'].' '.$row['NomUtilisateur'].'</td> 
+                                        <td >'.$row['IdArticle'].' </td>
+                                        <td >'.$row['TextComment'].'</td>
+                                        <td ><a href="Supprimer.php?idComment='.$row['IdComment'].'"><i class="fas fa-trash-alt"></i></a> 
+                                        </td>
+                                    </tr>
+                                ';
+                            }
+                                                
+
+                            }
+                        ?>
+                   
+                                          
              </table>
                
     </div>
